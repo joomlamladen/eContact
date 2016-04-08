@@ -2,7 +2,8 @@
 APP_NAME = 'econtact'
 PREFIX = 'econtact'
 IMPORTS = [
-    'contact'
+    'contact',
+    'subscribers'
 ]
 SHOW_SPECS = True
 DB_CONF = '{}.config.echoconfig'.format(APP_NAME)
