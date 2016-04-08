@@ -50,8 +50,8 @@ def do_put(email, name, mailmsg, *args, **kwargs):
     rh1.set_argument('receiver', support_mail)
     rh1.set_argument('message', message)
     kwargs['request_handler'] = rh1
-    res = base_api.mail_api.save_mail.do_put(support_mail, message, *args, **kwargs)
+    res = base_api.mail_api.save_mail.do_put(email, support_mail, message, *args, **kwargs)
     if 'http_status' not in res or res['http_status'] != 204:
-        return base_common.msg.error('Error finishing change password request')
+        return base_common.msg.error('Something wrong')
 
     return base_common.msg.post_ok(msgs.OK)
