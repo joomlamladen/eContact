@@ -1,5 +1,6 @@
+
 APP_NAME = 'econtact'
-PREFIX = 'api'
+PREFIX = 'econtact'
 IMPORTS = [
     'contact'
 ]
