@@ -1,6 +1,7 @@
 DROP TABLE if exists subscribers;
 CREATE TABLE subscribers (
 	id char(10) NOT NULL,
+	id_project int NOT NULL,
 	email varchar(128) NOT NULL,
 	PRIMARY KEY (id),
 	INDEX (email)

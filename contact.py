@@ -8,52 +8,60 @@ from base_common.dbacommon import params
 from base_common.dbacommon import app_api_method
 from base_svc.comm import BaseAPIRequestHandler
 from base_config.service import support_mail
-
+import json
 import base_api.hash2params.save_hash
 import base_api.mail_api.save_mail
-
 
 name = "Send email"
 location = "contact"
 request_timeout = 10
 
 
-def get_email_message(name,email,mailmsg):
+def get_message(data, email, mailmsg, host):
 
-    m = """Mail send from {},<br/> with email: {}<br/><br/>Message: <br/>{}""".format(
-            email,
-            name,
-            mailmsg
-            )
+    data = json.loads(data)
 
-    return m
+    emessage = ''
+    receiver = ''
+    sender = email
+    if host == "":
+            receiver = ''
+            emessage += 'Sender name : ' + data['firstName'] + data['lastName']+ ' </br>'
+            emessage += 'Sender phone : ' + data['phone'] + ' </br>'
+            emessage += 'Sender email : ' + email + ' </br>'
 
+    if host == "":
+        receiver = ''
+        emessage = mailmsg
+
+
+    return sender, receiver, emessage
 
 @app_api_method(
     method='PUT',
-    #api_return=[(200, 'OK'), (404, '')]
 )
 @params(
-    {'arg': 'email', 'type': str, 'required': True, 'description': 'Guest email'},
-    {'arg': 'name', 'type': str, 'required': True, 'description': 'Guest name'},
-    {'arg': 'mailmsg', 'type': str, 'required': True, 'description': 'Guest message'},
+    {'arg': 'data', 'type': json, 'required': True, 'description': 'Data'},
+    {'arg': 'email', 'type': str, 'required': True, 'description': 'Email'},
+    {'arg': 'mailmsg', 'type': str, 'required': False, 'description': 'Message'},
 )
-def do_put(email, name, mailmsg, *args, **kwargs):
+def do_put(data, email, mailmsg, *args, **kwargs):
+
     """
     Save email for sending
     """
-    message = get_email_message(email, name, mailmsg)
-    support_mail = 'milicevicdj@gmail.com'
+
+    sender,receiver, emessage = get_message(data,email,mailmsg,kwargs['request_handler'].request.host)
+    # print(sender,receiver,message)
     # SAVE EMAIL FOR SENDING
     rh1 = BaseAPIRequestHandler()
-    rh1.set_argument('sender', email)
-    rh1.set_argument('receiver', support_mail)
-    rh1.set_argument('message', message)
+    rh1.set_argument('sender', sender)
+    rh1.set_argument('receiver', receiver)
+    rh1.set_argument('message', emessage)
     kwargs['request_handler'] = rh1
 
-    res = base_api.mail_api.save_mail.do_put(email, support_mail, message, *args, **kwargs)
+    res = base_api.mail_api.save_mail.do_put(sender, receiver, emessage, *args, **kwargs)
     if 'http_status' not in res or res['http_status'] != 204:
         return base_common.msg.error('Something wrong')
-
 
     return base_common.msg.post_ok(msgs.OK)
