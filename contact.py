@@ -17,20 +17,20 @@ location = "contact"
 request_timeout = 10
 
 
-def get_message(data, email, mailmsg, host):
+def get_message(data, email, mailmsg,web):
 
     data = json.loads(data)
 
     emessage = ''
     receiver = ''
     sender = email
-    if host == "":
+    if web == "mojlet":
             receiver = ''
             emessage += 'Sender name : ' + data['firstName'] + data['lastName']+ ' </br>'
             emessage += 'Sender phone : ' + data['phone'] + ' </br>'
             emessage += 'Sender email : ' + email + ' </br>'
 
-    if host == "":
+    if web == "dgitalcube":
         receiver = ''
         emessage = mailmsg
 
@@ -44,14 +44,15 @@ def get_message(data, email, mailmsg, host):
     {'arg': 'data', 'type': json, 'required': True, 'description': 'Data'},
     {'arg': 'email', 'type': str, 'required': True, 'description': 'Email'},
     {'arg': 'mailmsg', 'type': str, 'required': False, 'description': 'Message'},
+    {'arg': 'web', 'type': str, 'required': True, 'description': 'Name of website'},
 )
-def do_put(data, email, mailmsg, *args, **kwargs):
+def do_put(data, email, mailmsg, web, *args, **kwargs):
 
     """
     Save email for sending
     """
 
-    sender,receiver, emessage = get_message(data,email,mailmsg,kwargs['request_handler'].request.host)
+    sender,receiver, emessage = get_message(data,email,mailmsg,web)
     # print(sender,receiver,message)
     # SAVE EMAIL FOR SENDING
     rh1 = BaseAPIRequestHandler()
