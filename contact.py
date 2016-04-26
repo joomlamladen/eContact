@@ -17,7 +17,7 @@ location = "contact"
 request_timeout = 10
 
 
-def get_message(data, email, mailmsg,web):
+def get_message(data, email, mailmsg, web):
 
     data = json.loads(data)
 
@@ -26,13 +26,13 @@ def get_message(data, email, mailmsg,web):
     sender = email
     if web == "mojlet":
             receiver = ''
-            emessage += 'Sender name : ' + data['firstName'] + data['lastName']+ ' </br>'
+            emessage += 'Sender name : ' + data['firstName'] + data['lastName'] + ' </br>'
             emessage += 'Sender phone : ' + data['phone'] + ' </br>'
             emessage += 'Sender email : ' + email + ' </br>'
 
-    if web == "dgitalcube":
-        receiver = ''
-        emessage = mailmsg
+    if web == "digitalcube":
+        receiver = 'mladen@digitalcube.rs'
+        emessage = mailmsg + ' , '+ data['name']
 
 
     return sender, receiver, emessage
