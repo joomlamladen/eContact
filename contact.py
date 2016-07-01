@@ -31,10 +31,19 @@ def get_message(data, email, mailmsg, web):
             emessage += 'Sender email : ' + email + ' </br>'
 
     if web == "digitalcube":
+        import re
         receiver = 'mladen@digitalcube.rs'
-        emessage = mailmsg + ' , '+ data['name']
-
-
+        rpl={'#email#':email,'#name#':data['name'],'#des#': mailmsg}
+        print(rpl)
+        with open('/home/digital/work/econtact/tpl-dcube1.html','r') as f:
+           s=f.read()
+           for key in rpl.keys():
+              s = re.sub( key, rpl[key], s )
+           
+           emessage = s
+           print(s)   
+    print(emessage)                                                 
+    print(sender+' '+receiver+' '+emessage)
     return sender, receiver, emessage
 
 @app_api_method(
@@ -51,14 +60,16 @@ def do_put(data, email, mailmsg, web, *args, **kwargs):
     """
     Save email for sending
     """
-
+    print(data+' '+email+' '+mailmsg)
     sender,receiver, emessage = get_message(data,email,mailmsg,web)
     # print(sender,receiver,message)
     # SAVE EMAIL FOR SENDING
+    subj = 'Email from digitalcube'
     rh1 = BaseAPIRequestHandler()
     rh1.set_argument('sender', sender)
     rh1.set_argument('receiver', receiver)
     rh1.set_argument('message', emessage)
+    rh1.set_argument('subject',subj)
     kwargs['request_handler'] = rh1
 
     res = base_api.mail_api.save_mail.do_put(sender, receiver, emessage, *args, **kwargs)
