@@ -1,6 +1,6 @@
 
-APP_NAME = 'econtact'
-PREFIX = 'econtact'
+APP_NAME = 'eContact'
+PREFIX = 'eContact'
 IMPORTS = [
     'contact',
     'subscribe'
@@ -12,6 +12,6 @@ TESTS = 'tests'
 BASE_TEST = True
 MSG_LOOKUP = 'lookup.api_messages'
 APP_VERSION = '0.0.1'
-# APP_HOOKS = 'apphooks'
+APP_HOOKS = 'hooks'
 # LB = False    # True for load balancer application
 # BALANCE = ['127.0.0.1:{}'.format(7700+x) for x in range(40)] # balance server address list

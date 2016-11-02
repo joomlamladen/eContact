@@ -61,19 +61,31 @@ def do_put(data, email, mailmsg, web, *args, **kwargs):
     Save email for sending
     """
     print(data+' '+email+' '+mailmsg)
-    sender,receiver, emessage = get_message(data,email,mailmsg,web)
+
+    # sender,receiver, emessage = get_message(data,email,mailmsg,web)
     # print(sender,receiver,message)
     # SAVE EMAIL FOR SENDING
-    subj = 'Email from digitalcube'
-    rh1 = BaseAPIRequestHandler()
-    rh1.set_argument('sender', sender)
-    rh1.set_argument('receiver', receiver)
-    rh1.set_argument('message', emessage)
-    rh1.set_argument('subject',subj)
-    kwargs['request_handler'] = rh1
+    # subj = 'Email from digitalcube'
+    # rh1 = BaseAPIRequestHandler()
+    # rh1.set_argument('sender', sender)
+    # rh1.set_argument('receiver', receiver)
+    # rh1.set_argument('message', emessage)
+    # rh1.set_argument('subject',subj)
+    # kwargs['request_handler'] = rh1
 
-    res = base_api.mail_api.save_mail.do_put(sender, receiver, emessage, *args, **kwargs)
+    # SAVE EMAILS FOR SENDING
+    rh1 = BaseAPIRequestHandler()
+    rh1.set_argument('sender', "support@digitalcube.rs")
+    rh1.set_argument('receiver', email)
+    rh1.set_argument('subject', 'Thanks for you intrest in Digital Cube')
+    rh1.set_argument('message', "Ovde ide poruka")
+    kwargs['request_handler'] = rh1
+    res = base_api.mail_api.save_mail.do_put(email, **kwargs)
     if 'http_status' not in res or res['http_status'] != 204:
-        return base_common.msg.error('Something wrong')
+            return base_common.msg.error('Something wrong')
+
+    # res = base_api.mail_api.save_mail.do_put(sender, receiver, emessage, *args, **kwargs)
+    # if 'http_status' not in res or res['http_status'] != 204:
+    #     return base_common.msg.error('Something wrong')
 
     return base_common.msg.post_ok(msgs.OK)
