@@ -32,10 +32,12 @@ def get_message(data, email, mailmsg, web):
 
     if web == "digitalcube":
         import re
+        #sender = 'mladen@digitalcube.rs'
+        subject = 'Digital Cube d.o.o. web'
         receiver = 'mladen@digitalcube.rs'
         rpl={'#email#':email,'#name#':data['name'],'#des#': mailmsg}
         print(rpl)
-        with open('/home/digital/work/econtact/tpl-dcube1.html','r') as f:
+        with open('/home/www/work/eContact/tpl-dcube1.html','r') as f:
            s=f.read()
            for key in rpl.keys():
               s = re.sub( key, rpl[key], s )
@@ -44,7 +46,7 @@ def get_message(data, email, mailmsg, web):
            print(s)   
     print(emessage)                                                 
     print(sender+' '+receiver+' '+emessage)
-    return sender, receiver, emessage
+    return subject, sender, receiver, emessage
 
 @app_api_method(
     method='PUT',
@@ -62,7 +64,7 @@ def do_put(data, email, mailmsg, web, *args, **kwargs):
     """
     print(data+' '+email+' '+mailmsg)
 
-    # sender,receiver, emessage = get_message(data,email,mailmsg,web)
+    subject, sender, receiver, emessage = get_message(data,email,mailmsg,web)
     # print(sender,receiver,message)
     # SAVE EMAIL FOR SENDING
     # subj = 'Email from digitalcube'
@@ -75,10 +77,11 @@ def do_put(data, email, mailmsg, web, *args, **kwargs):
 
     # SAVE EMAILS FOR SENDING
     rh1 = BaseAPIRequestHandler()
-    rh1.set_argument('sender', "support@digitalcube.rs")
-    rh1.set_argument('receiver', email)
-    rh1.set_argument('subject', 'Thanks for you intrest in Digital Cube')
-    rh1.set_argument('message', "Ovde ide poruka")
+    rh1.set_argument('sender', 'mladen@digitalcube.rs')
+    rh1.set_argument('receiver', 'mladen@digitalcube.rs')
+    rh1.set_argument('subject', subject)
+    rh1.set_argument('message', email + '   ' +mailmsg)
+    rh1.set_argument('data',data)
     kwargs['request_handler'] = rh1
     res = base_api.mail_api.save_mail.do_put(email, **kwargs)
     if 'http_status' not in res or res['http_status'] != 204:
